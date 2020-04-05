@@ -5,8 +5,7 @@ interface ILabeledValue {
 function printLabel(labeledObj: ILabeledValue) {
   console.log(labeledObj.label)
 }
-const myObj = { size: 10, label: 'Size 10 Object' }
-printLabel(myObj)
+printLabel({ label: 'label description' })
 
 
 /** Optional Properties */
@@ -35,9 +34,14 @@ interface IPoint {
 const point: IPoint = { x: 1, y: 2 }
 
 
-/** Excess Property Checks */
-const data = { name: 'Jefferson', permissionsLevels: 123 }
-createAccount(data)
+/**
+ * Excess Property Checks
+ * Se por exemplo fosse informado permissionsLevels (com um S no fim)
+ * O TS retornaria um erro:
+ * 
+ * "'permissionsLevels' does not exist in type 'IDataAccount'.
+ * Did you mean to write 'permissionsLevel'?" */
+createAccount({ name: 'Jefferson', permissionsLevel: 123 })
 
 
 /** Function Types */
@@ -98,3 +102,29 @@ function getCounter(): ICounter {
   counter.reset = function () {}
   return counter
 }
+
+
+/** Interfaces Extending Classes */
+class Control {
+  private state: any
+}
+interface SelectableControl extends Control {
+  select(): void
+}
+class Button extends Control implements SelectableControl {
+  // Como esta classe extende Control, então ela consegue ser criada
+  select() {}
+}
+class TextBox extends Control {
+  // Como esta classe extende Control, então ela consegue ser criada mesmo sem
+  // implementar a interface
+  select() {}
+}
+/**
+ * Mas uma classe que implementa a interface acima não consegue ser criada
+ * se não extender a classe Control, resultando em erro
+ * 
+ *  class ImageClass implements SelectableControl {
+ *    select() {}
+ *  }
+ */
